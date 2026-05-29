@@ -1,8 +1,7 @@
 # Runtimes & heavy dependency folders (Never push these to Git!)
-app/env/
+app/
 TensorRT-8.6.1.6/
 TensorRT-8.6.1.6.Windows10.x86_64.cuda-11.8.zip
-app/checkpoints/
 *.engine
 *.trt
 
