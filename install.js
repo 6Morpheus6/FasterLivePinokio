@@ -13,14 +13,14 @@ module.exports = {
     {
       method: "fs.copy",
       params: {
-        src: "patch/camera_webui.py",
+        src: "camera_webui.py",
         dest: "app/camera_webui.py"
       }
     },
     {
       method: "fs.copy",
       params: {
-        src: "patch/faster_live_portrait_pipeline.py",
+        src: "faster_live_portrait_pipeline.py",
         dest: "app/src/pipelines/faster_live_portrait_pipeline.py"
       }
     },
