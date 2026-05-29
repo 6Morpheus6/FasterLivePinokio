@@ -1,4 +1,7 @@
 module.exports = {
+  requires: {
+    bundle: "ai",
+  },
   run: [
     // Step 1: Clone the customized application repository into the "app" folder
     {
