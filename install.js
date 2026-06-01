@@ -5,6 +5,7 @@ module.exports = {
   run: [
     // Step 1: Clone the customized application repository into the "app" folder
     {
+      when: "{{!exists('app')}}",
       method: "shell.run",
       params: {
         message: [
@@ -25,21 +26,18 @@ module.exports = {
         ]
       }
     },
-    // Step 3: NVIDIA RTX/GTX CUDA and TensorRT setup
+    // Step 3: Install TensorRT
     {
       method: "shell.run",
       params: {
         venv: "env",
         path: "app",
         message: [
-          "uv pip uninstall onnxruntime onnxruntime-gpu",
-          "uv pip install onnxruntime-gpu==1.17.0",
-          "uv pip install nvidia-cuda-runtime-cu11==11.8.89 nvidia-cublas-cu11==11.11.3.6 nvidia-cudnn-cu11==8.9.5.29 nvidia-cufft-cu11==10.9.0.58 nvidia-curand-cu11==10.2.10.91",
-          "uv pip install tensorrt==8.6.1.6 tensorrt_libs==8.6.1.6"
+          "uv pip install tensorrt-cu12"
         ]
       }
     },
-    // Step 4: install torch
+    // Step 4: Install torch
     {
       method: "script.start",
       params: {
@@ -54,7 +52,17 @@ module.exports = {
         }
       }
     },
-    // Step 5: Download model checkpoints automatically
+    // Step 5: Install MultiScaleDeformableAttention
+    {
+      method: "shell.run",
+      params: {
+        build: true,
+        venv: "env",
+        path: "app",
+        message: "uv pip install src/models/XPose/models/UniPose/ops --no-build-isolation",
+      }
+    },
+    // Step 6: Download model checkpoints automatically
     {
       method: "shell.run",
       params: {
@@ -64,6 +72,19 @@ module.exports = {
           "env\\Scripts\\python.exe -c \"from huggingface_hub import snapshot_download; snapshot_download('warmshao/FasterLivePortrait', local_dir='./checkpoints', token=False)\""
         ]
       }
-    }
+    },
+    // Step 7: Download warping_module.pth
+    {
+        "method": "fs.download",
+        "params": {
+          "uri": [
+            "https://huggingface.co/KlingTeam/LivePortrait/resolve/main/liveportrait/base_models/appearance_feature_extractor.pth?download=true",
+            "https://huggingface.co/KlingTeam/LivePortrait/resolve/main/liveportrait/base_models/motion_extractor.pth?download=true",
+            "https://huggingface.co/KlingTeam/LivePortrait/resolve/main/liveportrait/base_models/spade_generator.pth?download=true",
+            "https://huggingface.co/KlingTeam/LivePortrait/resolve/main/liveportrait/base_models/warping_module.pth?download=true",
+          ],
+          "dir": "app/checkpoints/liveportrait_pytorch",
+        }
+      },
   ]
 }
