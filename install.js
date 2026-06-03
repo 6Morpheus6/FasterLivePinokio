@@ -19,25 +19,10 @@ module.exports = {
       params: {
         venv: "env",
         path: "app",
-        message: [
-          "uv pip install gradio devicetorch",
-          "uv pip install -r requirements.txt",
-          "uv pip install \"numpy<2\" \"opencv-python<4.11\" \"opencv-contrib-python<4.11\""
-        ]
+        message: "uv pip install -r requirements.txt"
       }
     },
-    // Step 3: Install TensorRT
-    {
-      method: "shell.run",
-      params: {
-        venv: "env",
-        path: "app",
-        message: [
-          "uv pip install tensorrt-cu12"
-        ]
-      }
-    },
-    // Step 4: Install torch
+    // Step 3: Install torch
     {
       method: "script.start",
       params: {
@@ -52,7 +37,7 @@ module.exports = {
         }
       }
     },
-    // Step 5: Install MultiScaleDeformableAttention
+    // Step 4: Install MultiScaleDeformableAttention
     {
       method: "shell.run",
       params: {
@@ -62,38 +47,18 @@ module.exports = {
         message: "uv pip install src/models/XPose/models/UniPose/ops --no-build-isolation",
       }
     },
-    // Step 6: Download model checkpoints automatically
+    // Step 5: Download model checkpoints automatically
     {
       method: "shell.run",
       params: {
         venv: "env",
         path: "app",
         message: [
-          "env\\Scripts\\python.exe -c \"from huggingface_hub import snapshot_download; snapshot_download('warmshao/FasterLivePortrait', local_dir='./checkpoints', token=False)\""
+          "hf download warmshao/FasterLivePortrait --local-dir=./checkpoints"
         ]
       }
     },
-    // Step 4: Download and register Unity Capture Virtual Camera Loopback Driver (Windows only)
-    {
-      when: "{{platform === 'win32'}}",
-      method: "fs.download",
-      params: {
-        url: "https://github.com/schellingb/UnityCapture/archive/refs/heads/master.zip",
-        path: "app/unity_capture.zip"
-      }
-    },
-    {
-      when: "{{platform === 'win32'}}",
-      method: "shell.run",
-      params: {
-        message: [
-          "powershell -Command \"Expand-Archive -Path app\\unity_capture.zip -DestinationPath app\\driver -Force\"",
-          "del app\\unity_capture.zip",
-          "powershell -Command \"Start-Process regsvr32.exe -ArgumentList '/s \\\"{{path.resolve(cwd, 'app', 'driver', 'UnityCapture-master', 'Install', 'UnityCaptureFilter.dll')}}\\\"' -Verb RunAs -Wait\""
-        ]
-      }
-    },
-    // Step 7: Download warping_module.pth
+    // Step 6: Download pytorch models
     {
         "method": "fs.download",
         "params": {
