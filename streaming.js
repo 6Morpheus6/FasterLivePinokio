@@ -21,6 +21,12 @@ module.exports = {
           "powershell -Command \"Start-Process regsvr32.exe -ArgumentList '/s \\\"{{path.resolve(cwd, 'app', 'driver', 'UnityCapture-master', 'Install', 'UnityCaptureFilter.dll')}}\\\"' -Verb RunAs -Wait\""
         ]
       }
+    },
+    {
+      method: "notify",
+      params: {
+        html: "Streaming Service installed successfully."
+      }
     }
   ]
 }

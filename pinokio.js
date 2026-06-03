@@ -86,7 +86,7 @@ module.exports = {
           icon: "fa-solid fa-bolt",
           text: "Streaming",
           href: "streaming.js",
-          confirm: "This will install a virtual camera driver globally on your system. Only supported on Windows."
+          confirm: "This will install a virtual camera driver on your system, allowing you to stream your processed video during video chats.\nOnly supported on Windows."
         }, {
           icon: "fa-solid fa-plug",
           text: "Update",
