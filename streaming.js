@@ -16,9 +16,23 @@ module.exports = {
       method: "shell.run",
       params: {
         message: [
-          "powershell -Command \"Expand-Archive -Path app\\unity_capture.zip -DestinationPath app\\driver -Force\"",
-          "del app\\unity_capture.zip",
-          "powershell -Command \"Start-Process regsvr32.exe -ArgumentList '/s \\\"{{path.resolve(cwd, 'app', 'driver', 'UnityCapture-master', 'Install', 'UnityCaptureFilter.dll')}}\\\"' -Verb RunAs -Wait\""
+          "powershell -NoProfile -Command \"Expand-Archive -Path '{{path.resolve(cwd, 'app', 'unity_capture.zip')}}' -DestinationPath '{{path.resolve(cwd, 'app', 'driver')}}' -Force\""
+        ]
+      }
+    },
+    {
+      when: "{{platform === 'win32'}}",
+      method: "fs.rm",
+      params: {
+        path: "app/unity_capture.zip"
+      }
+    },
+    {
+      when: "{{platform === 'win32'}}",
+      method: "shell.run",
+      params: {
+        message: [
+          "powershell -NoProfile -Command \"Start-Process regsvr32.exe -ArgumentList '/s \\\"{{path.resolve(cwd, 'app', 'driver', 'UnityCapture-master', 'Install', 'UnityCaptureFilter32.dll')}}\\\"' -Verb RunAs -WindowStyle Hidden -Wait; Start-Process regsvr32.exe -ArgumentList '/s \\\"{{path.resolve(cwd, 'app', 'driver', 'UnityCapture-master', 'Install', 'UnityCaptureFilter64.dll')}}\\\"' -Verb RunAs -WindowStyle Hidden -Wait\""
         ]
       }
     },
